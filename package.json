@@ -1,6 +1,6 @@
 {
-  "name": "cobertura-merge",
-  "version": "1.0.4",
+  "name": "@tw/cobertura-merge",
+  "version": "1.0.9",
   "description": "Merges cobertura XML files",
   "main": "build/src/index.js",
   "typings": "build/src",

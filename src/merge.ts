@@ -52,11 +52,14 @@ export function mergeInputs(inputs: InputData[]): CoberturaJson {
         packages: [
           {
             package: flatten(
-              inputs.map((input) => {
-                const originalBaseDir = input.data.coverage[0].sources?.[0].source[0].$t ?? '';
+              inputs?.map((input) => {
+                const coverageNode = input?.data?.coverage?.[0];
+                if (!coverageNode) return [];
+
+                const originalBaseDir = coverageNode?.sources?.[0]?.source?.[0]?.$t ?? '';
 
                 return flatten(
-                  input.data.coverage[0].packages.map((packages) => {
+                  coverageNode?.packages?.map((packages) => {
                     if ((packages as Package).package) {
                       return (packages as Package).package.map((jsonPackage) => ({
                         name: jsonPackage.name === '.' ? input.packageName : `${input.packageName}.${jsonPackage.name}`,
@@ -87,11 +90,12 @@ export function mergeInputs(inputs: InputData[]): CoberturaJson {
                       // No packages
                       return [];
                     } else {
-                      throw new Error('Unknown package format: ' + JSON.stringify(packages));
+                      console.warn('Unknown package format: ', JSON.stringify(packages));
+                      return [];
                     }
-                  })
+                  }) ?? []
                 );
-              })
+              }) ?? []
             ),
           },
         ],
