@@ -1,10 +1,9 @@
 import { ParsedArgs } from 'minimist';
-import { isArray, isString } from 'util';
-import { toJson } from 'xml2json';
 import { CoberturaJson } from './types/cobertura';
 import glob from 'glob';
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+import { XMLParser } from 'fast-xml-parser';
 
 interface PackageJson {
   version: string;
@@ -42,9 +41,9 @@ export function validateArgs(args: ParsedArgs): void {
   if (
     (args._.length < 3 && args.files == undefined) ||
     args.o === true ||
-    isArray(args.o) ||
-    isString(args.p) ||
-    isArray(args.p)
+    Array.isArray(args.o) ||
+    typeof args.p === 'string' ||
+    Array.isArray(args.p)
   ) {
     // Input error
     printHelp();
@@ -78,18 +77,20 @@ export function getInputDataFromArgs(args: ParsedArgs): InputData[] {
     packages = glob.sync(args.files).map((file, i) => `package${i + 1}=${file}`);
   }
 
-  return packages.map((inputArg, index) => {
+  return packages.map((inputArg) => {
     const parts = inputArg.split('=');
     const packageName = parts[0];
     const fileName = parts[1];
     let data: CoberturaJson;
     try {
-      data = JSON.parse(
-        toJson(fs.readFileSync(fileName, 'utf-8'), {
-          arrayNotation: true,
-          reversible: true,
-        })
-      ) as CoberturaJson;
+      const parser = new XMLParser({
+        ignoreAttributes: false,
+        isArray: () => true,
+        preserveOrder: false,
+      });
+
+      const xmlData = fs.readFileSync(fileName, 'utf-8');
+      data = parser.parse(xmlData) as CoberturaJson;
     } catch (e) {
       console.log(`Unable to read file ${fileName}`);
       process.exit(1);

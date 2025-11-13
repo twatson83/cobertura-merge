@@ -2,12 +2,12 @@
   "compilerOptions": {
     "declaration": true,
     "module": "commonjs",
-    "target": "ES2017",
+    "target": "ES2021",
     "outDir": "build",
     "rootDirs": ["src", "test"],
     "lib": ["esnext"],
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    //"allowSyntheticDefaultImports": true,
     "alwaysStrict": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
@@ -18,7 +18,7 @@
     "noUnusedLocals": true,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
-    "skipDefaultLibCheck": true,
+    // "skipDefaultLibCheck": true,
     "strictPropertyInitialization": true,
     "sourceMap": true
   }

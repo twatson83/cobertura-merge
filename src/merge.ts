@@ -1,7 +1,7 @@
 import { InputData } from './input';
 import { CoberturaJson, Package, Class, Text } from './types/cobertura';
 import { flatten } from './util';
-import * as path from 'path';
+import path from 'node:path';
 
 const VERSION = '0.1';
 
